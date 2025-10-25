@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AgendumController;
 use App\Http\Controllers\ProgramController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,3 +26,14 @@ Route::post('/programs/{program:code}/agenda', [AgendumController::class, 'store
 Route::put('/programs/{program:code}/agenda/{agendum}', [AgendumController::class, 'update'])->name('agenda.update');
 Route::delete('/programs/{program:code}/agenda/{agendum}', [AgendumController::class, 'destroy'])->name('agenda.destroy');
 Route::post('/programs/{program:code}/agenda/{agendum}/start', [AgendumController::class, 'startAgendum'])->name('programs.agenda.start');
+
+
+Route::get('/maintenance/migrate', function () {
+    Artisan::call('migrate', ['--force' => true]);
+    return '✅ Migration completed successfully.';
+})->name('maintenance.migrate');
+
+Route::get('/maintenance/optimize', function () {
+    Artisan::call('optimize');
+    return '⚡ Application optimized successfully.';
+})->name('maintenance.optimize');
