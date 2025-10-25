@@ -64,18 +64,21 @@ class ProgramController extends Controller
 
     public function start(Program $program)
     {
-        $program->update(['started_at' => now()]); 
+        $program->update(['started_at' => now()]);
         return redirect()->route('programs.run', $program);
     }
 
     public function run(Program $program, ?Agendum $agendum = null)
     {
-        if($program->hasEnded()) {
+        if ($program->hasEnded()) {
             return redirect()->route('programs.show', $program);
         }
-        
+
         // If no specific agenda is passed, start with the first one
-        $currentAgendum = $agendum ?? $program->agenda()->orderBy('order')->first();
+        $currentAgendum = $agendum ?? $program->agenda()
+            ->orderByDesc('started_at') // latest started agenda first
+            ->orderBy('order')          // fallback ordering if none started
+            ->first();
 
         // Get the previous and next agenda based on 'order'
         $prevAgendum = $program->agenda()
@@ -88,7 +91,7 @@ class ProgramController extends Controller
             ->orderBy('order', 'asc')
             ->first();
 
-        if($prevAgendum) {
+        if ($prevAgendum) {
             $prevAgendum->update(['ended_at' => now()]);
         }
 
