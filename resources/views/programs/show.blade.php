@@ -68,7 +68,7 @@
                 <p class="text-gray-500 italic">No agenda added yet.</p>
             @else
                 <ul id="agendaList" class="divide-y divide-gray-100">
-                    @foreach ($program->agenda as $index => $agendum)
+                    @foreach ($program->agenda()->orderBy('order')->get() as $index => $agendum)
                         <li class="agenda-item py-4 flex items-start justify-between hover:bg-blue-50 transition rounded-lg cursor-pointer"
                             data-id="{{ $agendum->id }}" data-title="{{ e($agendum->title) }}"
                             data-description="{{ e($agendum->description) }}" data-duration="{{ $agendum->duration }}"

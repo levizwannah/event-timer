@@ -76,8 +76,8 @@ class ProgramController extends Controller
 
         // If no specific agenda is passed, start with the first one
         $currentAgendum = $agendum ?? $program->agenda()
-            ->orderByDesc('started_at') // latest started agenda first
-            ->orderBy('order')          // fallback ordering if none started
+            ->orderBy('started_at', 'desc')
+            ->orderBy('order')          
             ->first();
 
         // Get the previous and next agenda based on 'order'

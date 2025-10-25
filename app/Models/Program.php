@@ -13,7 +13,7 @@ class Program extends Model
 
     public function agenda()
     {
-        return $this->hasMany(Agendum::class)->orderBy('order');
+        return $this->hasMany(Agendum::class);
     }
 
     protected static function boot()
