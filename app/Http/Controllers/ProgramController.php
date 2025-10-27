@@ -82,12 +82,14 @@ class ProgramController extends Controller
 
         // Get the previous and next agenda based on 'order'
         $prevAgendum = $program->agenda()
-            ->where('order', '<', $currentAgendum->order)
+            ->where('order', '<=', $currentAgendum->order)
+            ->whereNot('id', $currentAgendum->id)
             ->orderBy('order', 'desc')
             ->first();
 
         $nextAgendum = $program->agenda()
-            ->where('order', '>', $currentAgendum->order)
+            ->where('order', '>=', $currentAgendum->order)
+            ->whereNot('id', $currentAgendum->id)
             ->orderBy('order', 'asc')
             ->first();
 
