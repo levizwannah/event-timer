@@ -77,20 +77,36 @@ class ProgramController extends Controller
         // If no specific agenda is passed, start with the first one
         $currentAgendum = $agendum ?? $program->agenda()
             ->orderBy('started_at', 'desc')
-            ->orderBy('order')          
+            ->orderBy('order')
             ->first();
 
-        // Get the previous and next agenda based on 'order'
         $prevAgendum = $program->agenda()
-            ->where('order', '<=', $currentAgendum->order)
-            ->whereNot('id', $currentAgendum->id)
+            ->where('id', '<>', $currentAgendum->id)
+            ->where(function ($q) use ($currentAgendum) {
+                $q->where('order', '<', $currentAgendum->order)
+                    ->orWhere(function ($q2) use ($currentAgendum) {
+                        $q2->where('order', $currentAgendum->order)
+                            ->where('updated_at', '<', $currentAgendum->updated_at);
+                    });
+            })
             ->orderBy('order', 'desc')
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
             ->first();
 
+        // next: either higher order OR same order but updated_at > current updated_at
         $nextAgendum = $program->agenda()
-            ->where('order', '>=', $currentAgendum->order)
-            ->whereNot('id', $currentAgendum->id)
+            ->where('id', '<>', $currentAgendum->id)
+            ->where(function ($q) use ($currentAgendum) {
+                $q->where('order', '>', $currentAgendum->order)
+                    ->orWhere(function ($q2) use ($currentAgendum) {
+                        $q2->where('order', $currentAgendum->order)
+                            ->where('updated_at', '>', $currentAgendum->updated_at);
+                    });
+            })
             ->orderBy('order', 'asc')
+            ->orderBy('updated_at', 'asc')
+            ->orderBy('id', 'asc')
             ->first();
 
         if ($prevAgendum) {
