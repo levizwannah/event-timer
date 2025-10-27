@@ -100,6 +100,43 @@
                 </ul>
             @endif
 
+            @if ($program->agenda->isNotEmpty())
+                @php
+                    $totalMinutes = $program->agenda->sum('duration');
+
+                    $months = floor($totalMinutes / (60 * 24 * 30));
+                    $remainingMinutes = $totalMinutes % (60 * 24 * 30);
+
+                    $days = floor($remainingMinutes / (60 * 24));
+                    $remainingMinutes %= 60 * 24;
+
+                    $hours = floor($remainingMinutes / 60);
+                    $minutes = $remainingMinutes % 60;
+
+                    $parts = [];
+                    if ($months > 0) {
+                        $parts[] = "$months " . Str::plural('month', $months);
+                    }
+                    if ($days > 0) {
+                        $parts[] = "$days " . Str::plural('day', $days);
+                    }
+                    if ($hours > 0) {
+                        $parts[] = "$hours " . Str::plural('hour', $hours);
+                    }
+                    if ($minutes > 0) {
+                        $parts[] = "$minutes " . Str::plural('minute', $minutes);
+                    }
+
+                    $formattedDuration = implode(', ', $parts);
+                @endphp
+
+                <div class="mt-6 text-center text-gray-600 text-sm">
+                    <span class="font-semibold text-gray-800">Total Duration:</span>
+                    {{ $formattedDuration ?: '—' }}
+                </div>
+            @endif
+
+
             {{-- Add Agendum Button --}}
             @if (!$program->hasEnded())
                 <div class="mt-6 text-center">
