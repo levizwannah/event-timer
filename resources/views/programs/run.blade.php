@@ -175,10 +175,43 @@
             updateTimer();
             setInterval(updateTimer, 1000);
 
-            
+
         });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let wakeLock = null;
+
+            // Function to request a wake lock
+            async function requestWakeLock() {
+                try {
+                    if ('wakeLock' in navigator) {
+                        wakeLock = await navigator.wakeLock.request('screen');
+                        console.log('Screen Wake Lock active');
+
+                        // Re-acquire if it’s released automatically
+                        wakeLock.addEventListener('release', () => {
+                            console.log('Wake Lock released');
+                        });
+                    } else {
+                        console.warn('Wake Lock API not supported on this browser');
+                    }
+                } catch (err) {
+                    console.error(`${err.name}, ${err.message}`);
+                }
+            }
+
+            // Re-request when tab becomes active again
+            document.addEventListener('visibilitychange', () => {
+                if (wakeLock !== null && document.visibilityState === 'visible') {
+                    requestWakeLock();
+                }
+            });
+
+            requestWakeLock();
+        });
+    </script>
 
 
 @endsection
