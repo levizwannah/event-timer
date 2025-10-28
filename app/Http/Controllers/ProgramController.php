@@ -78,6 +78,8 @@ class ProgramController extends Controller
         $currentAgendum = $agendum ?? $program->agenda()
             ->orderBy('started_at', 'desc')
             ->orderBy('order')
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
             ->first();
 
         $prevAgendum = $program->agenda()
