@@ -69,12 +69,12 @@
             </div>
 
             @if (!$program->hasEnded())
-                <form method="POST" action="{{ route('programs.end', $program) }}">
+                <form id="end-program-form" method="POST" action="{{ route('programs.end', $program) }}">
                     @csrf
-                    <button type="submit"
-                        class="w-full inline-flex justify-center items-center gap-2 px-5 py-3 border text-red-500 font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition">
+                    <a href="#" id="end-program-btn"
+                        class="block text-center w-full inline-flex justify-center items-center gap-2 px-5 py-3 border border-red-200 text-red-600 font-semibold rounded-lg shadow-sm hover:bg-red-50 transition">
                         <i class="fas fa-flag-checkered"></i> End Program
-                    </button>
+                    </a>
                 </form>
             @endif
         @else
@@ -111,6 +111,34 @@
                     }
                 });
             }
+
+            const endButton = document.getElementById('end-program-btn');
+            const form = document.getElementById('end-program-form');
+
+            if (!endButton || !form) return;
+
+            endButton.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'End this Program?',
+                    text: 'Once you end this program, you will not be able to continue the timers.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, End Program',
+                    cancelButtonText: 'No, Keep Running',
+                    reverseButtons: true,
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'bg-red-600 text-white font-semibold px-4 py-2 rounded hover:bg-red-700 mx-2',
+                        cancelButton: 'bg-green-600 text-white font-semibold px-4 py-2 rounded hover:bg-green-700 mx-2'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
 
             const durationMinutes = {{ $currentAgendum->duration ?? 0 }};
             const agendumId = {{ $currentAgendum->id ?? 'null' }};

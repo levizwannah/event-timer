@@ -297,10 +297,12 @@
                 addModal.classList.remove('flex');
                 addModal.classList.add('hidden');
             });
+
             cancelAdd.addEventListener('click', () => {
                 addModal.classList.remove('flex');
                 addModal.classList.add('hidden');
             });
+
             addModal.addEventListener('click', (e) => {
                 if (e.target === addModal) {
                     addModal.classList.remove('flex');
@@ -318,6 +320,7 @@
                         const description = decodeHtml(item.getAttribute('data-description') || '');
                         const duration = item.getAttribute('data-duration') || 0;
                         const order = item.getAttribute('data-order') || 1;
+                        const deleteBtn = document.getElementById('deleteAgendumBtn');
 
                         // populate form fields
                         document.getElementById('editTitle').value = title;
@@ -333,6 +336,8 @@
 
                         // delete form action
                         deleteForm.setAttribute('action', editAction);
+                        deleteBtn.setAttribute('data-id', id);
+                        deleteBtn.setAttribute('data-program', programCode);
 
                         // show modal
                         editModal.classList.remove('hidden');
